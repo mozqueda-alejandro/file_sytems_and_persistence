@@ -177,6 +177,7 @@ _overwriteFile_<br/>
 
 _constructFileSystem_<br/>
 **Funtionality**: <br/>
+OCCURS WHEN YOU EXIT THE PROGRAM
 1. Get the path to the user's home directory using the method you used to find it to create the path to the directory. Append the directory name to form a full path to the directory from the user home.  
 2. Use the [mkdir](https://linux.die.net/man/1/mkdir) command to create a persistent directory with the same name as your directory. The user who creates the directory should have read, write, and execute privileges. Everyone else should have read permissions. If you do this correctly, you will see the directory appear in your user home directory.   
 3. Iterate through the files stored in the directory object, and concatenate the directory path with the file name to get the file path.  
