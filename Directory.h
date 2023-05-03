@@ -10,6 +10,7 @@ class Directory
 {
 public:
     Directory();
+    void init(std::string directoryName);
 
     std::list<File> getFiles();
     std::string getDirectoryName();
