@@ -4,22 +4,20 @@
 class File
 {
 public:
-    File();
-    File(std::string fileName, std::string fileContents, std::size_t fileSize);
+    File(std::string fileName);
+    File(std::string fileName, std::string fileContents);
+    File(std::string fileName, std::string fileContents, int fileSize);
 
     std::string getFileName();
     std::string getFileContents();
-    std::size_t getFileSize();
+    int getFileSize();
 
     void setFileName(std::string newFileName);
-    void setFileSize(std::size_t newFileSize);
+    void setFileSize(int newFileSize);
     void updateFileContents(std::string newFileContents);
     
-
-    ~File();
-
 private:
     std::string fileName;
     std::string fileContents;
-    std::size_t fileSize;
+    int fileSize;
 };
