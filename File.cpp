@@ -38,8 +38,10 @@ void File::setFileSize(int newFileSize) {
     fileSize = newFileSize;
 }
 
-void File::updateFileContents(std::string newFileContents) {
-    fileContents = newFileContents;
+void File::addFileContents(std::string additionalFileContents) {
+    fileContents += additionalFileContents;
 }
 
-
+void File::overwriteFileContents(std::string newFileContents) {
+    fileContents = newFileContents;
+}

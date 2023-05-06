@@ -33,8 +33,9 @@ std::string getHomeDirectory();
 void initializeDirectory();
 
 void printMenu();
-int validateMenuInput(std::string str);
+int validateMenuInput(std::string str, int min = 0, int max = 6);
 bool promptWriteToFile();
+int getFileIndex(std::string prompt);
 
 
 int main() {
@@ -208,19 +209,89 @@ void createFile() {
     directoryObject.addFile(fileName, contents, fileSize);
 
     std::cout << "File created in " + filePath + "\n";
+
     return;
 }
 
 void deleteFile() {
+    // Print directory files and get file number from user
+    int choice = getFileIndex("Which file would you like to delete?");
+    if (choice == -1) {
+        return;
+    }
 
+    // Delete file corresponding to user input using unlink command
+    File file = directoryObject.getFile(choice - 1);
+    std::string filePath = directoryObject.getDirectoryPath() + "/" + file.getFileName();
+    if (unlink(filePath.c_str()) == -1) {
+        std::cout << "Error deleting file\n";
+        return;
+    }
+
+    // Delete file object from directory object
+    directoryObject.deleteFile(choice - 1);
+
+    return;
 }
 
 void addContentsToFile() {
+    // Print directory files and get file number from user
+    int choice = getFileIndex("Which file would you like to add contents to?");
+    if (choice == -1) {
+        return;
+    }
 
+    // Open file for appending
+    File& file = directoryObject.getFile(choice - 1);
+    std::string filePath = directoryObject.getDirectoryPath() + "/" + file.getFileName();
+    std::ofstream outFile(filePath, std::ios_base::app);
+    if (!outFile) {
+        std::cout << "Error opening file\n";
+        return;
+    }
+
+    // Get contents from user and append it to the file
+    std::cout << "Enter the contents to add: ";
+    std::string contents;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+    getline(std::cin, contents);
+    outFile << contents;
+    outFile.close();
+
+    // Update file object in directory object
+    file.addFileContents(contents);
+
+    return;    
 }
 
 void overwriteFile() {
+    // Print directory files and get file number from user
+    int choice = getFileIndex("Which file would you like to overwrite?");
+    if (choice == -1) {
+        return;
+    }
 
+    // Open file for writing
+    File& file = directoryObject.getFile(choice - 1);
+    std::string filePath = directoryObject.getDirectoryPath() + "/" + file.getFileName();
+    std::ofstream outFile(filePath);
+    if (!outFile) {
+        std::cout << "Error opening file\n";
+        return;
+    }
+
+    // Get contents from user and overwrite the file
+    std::cout << "Enter the contents to overwrite the file with: ";
+    std::string contents;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+    getline(std::cin, contents);
+    outFile << contents;
+    outFile.close();
+
+    // Update file object in directory object
+    file.overwriteFileContents(contents);
+
+    return;
 }
 
 void displayDirectoryContents() {
@@ -239,19 +310,24 @@ void displayDirectoryContents() {
     //     i++;
     // }
     }
-    std::list<File> files = directoryObject.getFiles();
-    int len = files.size();
-    int i = 1;
-    for (auto file : files) {
-        std::cout << "\t" << i << ". " << file.getFileName() << " " << file.getFileSize() << " bytes" << std::endl;
-    }
-    std::cout << "\n";
-
+    std::cout << directoryObject.getDirectoryContents();
     return;
 }
 
 void displayFileContents() {
+    // Print directory files and get file number from user
+    int choice = getFileIndex("Which file would you like to display?");
+    if (choice == -1) {
+        return;
+    }
 
+    // Print file corresponding to user input
+    File file = directoryObject.getFile(choice - 1);
+    std::cout << "\n";
+    std::cout << file.getFileName() << ":" << std::endl;
+    std::cout << file.getFileContents() << std::endl;
+
+    return;
 }
 
 // Helper functions
@@ -287,12 +363,14 @@ void printMenu() {
     return;
 }
 
-int validateMenuInput(std::string str) {
-    if (str.length() != 1 || !isdigit(str[0])) {
-        return -1;
+int validateMenuInput(std::string str, int min, int max) {
+    for (int i = 0; i < str.length(); i++) {
+        if (!isdigit(str[i]) || str.length() > 3) {
+            return -1;
+        }
     }
-    int choice = str[0] - '0';
-    if (choice < 0 || choice > 6) {
+    int choice = std::stoi(str);
+    if (choice < min || choice > max) {
         return -1;
     }
     return choice;
@@ -322,4 +400,31 @@ bool promptWriteToFile() {
     }
     first = false;
     return writeToFile;
+}
+
+int getFileIndex(std::string prompt) {
+    int choice;
+    int lastFileIndex = directoryObject.getNumFiles();
+    while (true) {
+        std::cout << "\n";
+        std::cout << prompt; // Example: "Which file would you like to display?"
+        std::cout << "\n\n";
+
+        displayDirectoryContents();
+        std::cout << "\t" << (lastFileIndex + 1) << ". Nevermind\n"; // Example: 5. Nevermind
+
+        std::cout << "\n";
+        std::string userInput;
+        std::cin >> userInput;
+        choice = validateMenuInput(userInput, 1, lastFileIndex + 1);
+        if (choice == -1) {
+            std::cout << "Invalid input\n";
+            continue;
+        } else if (choice == lastFileIndex + 1) {
+            return -1; // User chose Nevermind
+        }
+        break;
+    }
+
+    return choice;
 }

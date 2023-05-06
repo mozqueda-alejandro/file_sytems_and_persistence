@@ -16,13 +16,15 @@ public:
     void init(std::string directoryName, std::string directoryPath);
 
     std::list<File> getFiles();
+    File& getFile(int position);
+    void addFile(std::string fileName, std::string fileContents, int fileSize);
+    void deleteFile(int position);
     std::string getDirectoryName();
     std::string getDirectoryPath();
+    std::string getDirectoryContents();
     int getNumFiles();
-
-    void addFile(std::string fileName, std::string fileContents, int fileSize);
-
     void setDirectoryName(std::string directoryName);
+
 
     void updateFilesInDirectory(int position);
     

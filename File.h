@@ -14,7 +14,8 @@ public:
 
     void setFileName(std::string newFileName);
     void setFileSize(int newFileSize);
-    void updateFileContents(std::string newFileContents);
+    void addFileContents(std::string additionalFileContents);
+    void overwriteFileContents(std::string newFileContents);
     
 private:
     std::string fileName;
