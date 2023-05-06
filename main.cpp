@@ -31,6 +31,7 @@ void printMenu();
 int validateMenuInput(std::string str, int min = 0, int max = 6);
 bool promptWriteToFile();
 int getFileIndex(std::string prompt);
+int getFileSize(std::string filePath);
 
 
 int main() {
@@ -198,14 +199,9 @@ void createFile() {
     }
     outFile.close();
 
-    // Get real file size using stat
-    if (stat(filePath.c_str(), &statbuf) == -1) {
-        std::cout << "Error getting file size\n";
-        return;
-    }
-    int fileSize = statbuf.st_size;
 
     // Create file IN MEMORY and add it to the directory object
+    int fileSize = getFileSize(filePath);
     directoryObject.addFile(fileName, contents, fileSize);
     // std::cout << "File created in " + filePath + "\n";
 
@@ -259,6 +255,7 @@ void addContentsToFile() {
 
     // Update file object in directory object
     file.addFileContents(contents);
+    file.setFileSize(getFileSize(filePath));
 
     return;    
 }
@@ -289,6 +286,7 @@ void overwriteFile() {
 
     // Update file object in directory object
     file.setFileContents(contents);
+    file.setFileSize(getFileSize(filePath));
 
     return;
 }
@@ -402,4 +400,12 @@ int getFileIndex(std::string prompt) {
     }
 
     return choice;
+}
+
+int getFileSize(std::string filePath) {
+    if (stat(filePath.c_str(), &statbuf) == -1) {
+        std::cout << "Error getting file size\n";
+        return -1;
+    }
+    return statbuf.st_size;
 }
