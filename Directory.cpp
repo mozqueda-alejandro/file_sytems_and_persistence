@@ -22,16 +22,12 @@ File& Directory::getFile(int position) {
     return *it;
 }
 
-std::string Directory::getDirectoryName() {
-    return directoryName;
-}
-
-std::string Directory::getDirectoryPath() {
-    return directoryPath;
-}
-
 std::string Directory::getDirectoryContents() {
-    // std::cout << "\t" << i << ". " << file.getFileName() << " " << file.getFileSize() << " bytes" << std::endl;
+    // In the form:
+    // directoryName
+    //      1. fileName fileSize bytes
+    //      2. .. -1 bytes
+    //      3. . -1 bytes
     std::string directoryContents = directoryName + "\n";
     int i = 1;
     for (auto file : files) {
@@ -39,6 +35,14 @@ std::string Directory::getDirectoryContents() {
         i++;
     }
     return directoryContents;
+}
+
+std::string Directory::getDirectoryName() {
+    return directoryName;
+}
+
+std::string Directory::getDirectoryPath() {
+    return directoryPath;
 }
 
 int Directory::getNumFiles() {

@@ -1,3 +1,6 @@
+#ifndef FILE_H
+#define FILE_H
+
 #include <iostream>
 
 
@@ -14,11 +17,13 @@ public:
 
     void setFileName(std::string newFileName);
     void setFileSize(int newFileSize);
+    void setFileContents(std::string newFileContents);
     void addFileContents(std::string additionalFileContents);
-    void overwriteFileContents(std::string newFileContents);
     
 private:
     std::string fileName;
     std::string fileContents;
     int fileSize;
 };
+
+#endif // FILE_H
