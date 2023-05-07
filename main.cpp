@@ -110,6 +110,7 @@ void createDirectory() {
             std::cout << "Error creating directory in " + homeDirectory << std::endl;
             exit(1);
         }
+        std::cout << "Directory created in " + homeDirectory << "\n\n";
     }
 
     return;
