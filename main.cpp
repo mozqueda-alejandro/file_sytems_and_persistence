@@ -217,8 +217,8 @@ void deleteFile() {
     }
 
     // Delete file corresponding to user input using unlink command
-    File file = directoryObject.getFile(choice - 1);
-    std::string filePath = directoryObject.getDirectoryPath() + "/" + file.getFileName();
+    std::string fileName = directoryObject.getFileNameAtPosition(choice - 1);
+    std::string filePath = directoryObject.getDirectoryPath() + "/" + fileName;
     if (unlink(filePath.c_str()) == -1) {
         std::cout << "Error deleting file\n";
         return;
@@ -238,8 +238,8 @@ void addContentsToFile() {
     }
 
     // Open file for appending
-    File& file = directoryObject.getFile(choice - 1);
-    std::string filePath = directoryObject.getDirectoryPath() + "/" + file.getFileName();
+    File* file = directoryObject.getFile(choice - 1);
+    std::string filePath = directoryObject.getDirectoryPath() + "/" + file->getFileName();
     std::ofstream outFile(filePath, std::ios_base::app);
     if (!outFile) {
         std::cout << "Error opening file\n";
@@ -255,8 +255,8 @@ void addContentsToFile() {
     outFile.close();
 
     // Update file object in directory object
-    file.addFileContents(contents);
-    file.setFileSize(getFileSize(filePath));
+    file->addFileContents(contents);
+    file->setFileSize(getFileSize(filePath));
 
     return;    
 }
@@ -269,8 +269,8 @@ void overwriteFile() {
     }
 
     // Open file for writing
-    File& file = directoryObject.getFile(choice - 1);
-    std::string filePath = directoryObject.getDirectoryPath() + "/" + file.getFileName();
+    File* file = directoryObject.getFile(choice - 1);
+    std::string filePath = directoryObject.getDirectoryPath() + "/" + file->getFileName();
     std::ofstream outFile(filePath);
     if (!outFile) {
         std::cout << "Error opening file\n";
@@ -286,8 +286,8 @@ void overwriteFile() {
     outFile.close();
 
     // Update file object in directory object
-    file.setFileContents(contents);
-    file.setFileSize(getFileSize(filePath));
+    file->setFileContents(contents);
+    file->setFileSize(getFileSize(filePath));
 
     return;
 }
@@ -305,10 +305,10 @@ void displayFileContents() {
     }
 
     // Print file corresponding to user input
-    File file = directoryObject.getFile(choice - 1);
+    File* file = directoryObject.getFile(choice - 1);
     std::cout << "\n";
-    std::cout << file.getFileName() << ":" << std::endl;
-    std::cout << file.getFileContents() << std::endl;
+    std::cout << file->getFileName() << ":" << std::endl;
+    std::cout << file->getFileContents() << std::endl;
 
     return;
 }

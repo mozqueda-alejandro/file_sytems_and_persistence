@@ -19,7 +19,8 @@ public:
     void setFileSize(int newFileSize);
     void setFileContents(std::string newFileContents);
     void addFileContents(std::string additionalFileContents);
-    
+
+    ~File() = default;    
 private:
     std::string fileName;
     std::string fileContents;

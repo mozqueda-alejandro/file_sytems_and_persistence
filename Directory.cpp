@@ -2,8 +2,8 @@
 
 
 Directory::Directory() {
-    files.emplace_back("..", "", -1);
-    files.emplace_back(".", "", -1);
+    files[0] = new File("..", "", -1);
+    files[1] = new File(".", "", -1);
     numFiles = 2;
 }
 
@@ -12,14 +12,8 @@ void Directory::init(std::string directoryName, std::string directoryPath) {
     this->directoryPath = directoryPath;
 }
 
-std::list<File> Directory::getFiles() {
-    return files;
-}
-
-File& Directory::getFile(int position) {
-    std::list<File>::iterator it = files.begin();
-    std::advance(it, position);
-    return *it;
+File* Directory::getFile(int position) {
+    return files[position];
 }
 
 std::string Directory::getDirectoryContents() {
@@ -29,10 +23,8 @@ std::string Directory::getDirectoryContents() {
     //      2. .. -1 bytes
     //      3. . -1 bytes
     std::string directoryContents = directoryName + "\n";
-    int i = 1;
-    for (auto file : files) {
-        directoryContents += "\t" + std::to_string(i) + ". " + file.getFileName() + " " + std::to_string(file.getFileSize()) + " bytes\n";
-        i++;
+    for (int j = 0; j < numFiles; j++) {
+        directoryContents += '\t' + std::to_string(j + 1) + ". " + files[j]->getFileName() + " " + std::to_string(files[j]->getFileSize()) + " bytes\n";
     }
     return directoryContents;
 }
@@ -45,22 +37,26 @@ std::string Directory::getDirectoryPath() {
     return directoryPath;
 }
 
+std::string Directory::getFileNameAtPosition(int position) {
+    return files[position]->getFileName();
+}
+
 int Directory::getNumFiles() {
     return numFiles;
 }
 
 void Directory::addFile(std::string fileName, std::string fileContents, int fileSize) {
-    files.emplace_front(fileName, fileContents, fileSize);
+    files[numFiles] = files[numFiles - 1];
+    files[numFiles - 1] = files[numFiles - 2];
+    files[numFiles - 2] = new File(fileName, fileContents, fileSize);
     numFiles++;
 }
 
 void Directory::deleteFile(int position) {
-    std::list<File>::iterator it = files.begin();
-    std::advance(it, position);
-    files.erase(it);
-    numFiles--;
-}
+    delete files[position];
 
-void Directory::setDirectoryName(std::string directoryName) {
-    this->directoryName = directoryName;
+    for (int i = position; i < numFiles - 1; i++) {
+        files[i] = files[i + 1];
+    }
+    numFiles--;
 }
